@@ -14,6 +14,21 @@ import darkMobileAppBGImage from "./assets/images/bg-mobile-dark.jpg";
 function App() {
   const [isDark, setIsDark] = useState(false);
   const [todos, setTodos] = useState([]);
+  const [filteredTodos, setFilteredTodos] = useState(todos);
+
+  // Handle Filter Btns
+  const handleFilter = (filter) => {
+    switch (filter) {
+      case "all":
+        return setFilteredTodos(todos);
+      case "active":
+        return setFilteredTodos(todos.filter((todo) => !todo.isChecked));
+      case "completed":
+        return setFilteredTodos(todos.filter((todo) => todo.isChecked));
+      default:
+        return setFilteredTodos(todos);
+    }
+  };
 
   // Handle Add Todo changes from the parent
   const addTodo = (setText) => {
@@ -32,18 +47,18 @@ function App() {
   const handleDelete = (index) => {
     const updatedTodos = todos.filter((todo, i) => i !== index);
     setTodos(updatedTodos);
-    };
+  };
 
   // Handle Clear Completed
   const clearCompleted = () => {
     const updatedTodos = todos.filter((todo) => !todo.isChecked);
     setTodos(updatedTodos);
-  }
-
-  //  Get number of todos
-    const numberOfTodos = todos.length
+  };
 
   
+  
+  //  Get number of todos
+  const numberOfTodos = filteredTodos.length;
 
   // Handle Changes for image with relation to the screen size
   const [isLargeScreen, setIsLargeScreen] = useState(
@@ -58,9 +73,15 @@ function App() {
     mediaQuery.addEventListener("change", handleChange);
 
     // Cleanup event listener on when component unmounts
+    
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
+
+  useEffect(() => {
+    // Initialize filteredTodos to show all todos initially
+    setFilteredTodos(todos);
+  }, [todos])
 
   // Handle App Mode (Light or Dark) and Image to Show depending on screen size
   const changeIsDark = () => {
@@ -117,21 +138,23 @@ function App() {
           <Todo todoInfo={"Add firebase "} />
           {/* <Todo todoInfo={"Deploy to firebase"} />
         <Todo todoInfo={"Showcase Project"} /> */}
-          {todos.map((todo, index) => (
-        <Todo
-          key={index}
-          index={index}
-          todo={todo}
-          handleToggle={handleToggle}
-          handleDelete={handleDelete}
-        />
-      ))}
+          {filteredTodos.map((todo, index) => (
+            <Todo
+              key={index}
+              index={index}
+              todo={todo}
+              handleToggle={handleToggle}
+              handleDelete={handleDelete}
+            />
+          ))}
           <div className="bottom-info" style={{ backgroundColor: reusable }}>
-            <button>{numberOfTodos} item{numberOfTodos <= 1 ? "" : "s"} left</button>
+            <button>
+              {numberOfTodos} item{numberOfTodos <= 1 ? "" : "s"} left
+            </button>
             <button onClick={clearCompleted}>Clear completed</button>
           </div>
-          </div>
-        <TodoFooter />
+        </div>
+        <TodoFooter handleFilter={handleFilter} />
         <p className="dragdrop-info" style={{ color: bottomText }}>
           Drag and drop to reorder list
         </p>
