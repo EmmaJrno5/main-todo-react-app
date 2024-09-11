@@ -32,6 +32,14 @@
   border-radius: 50%;
   border: 1px solid hsl(236, 33%, 92%);
   flex-shrink: 0;
+  background: white;
+  display: grid;
+  place-items: center;
+}
+.tick-circle.checked{
+  /* hsl(192, 100%, 67%) to hsl(280, 87%, 65%) */
+  background: linear-gradient(hsl(192, 100%, 67%), hsl(280, 87%, 65%));
+
 }
 .dragdrop-info{
   margin-top: 50px;

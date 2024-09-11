@@ -17,9 +17,33 @@ function App() {
 
   // Handle Add Todo changes from the parent
   const addTodo = (setText) => {
-    setTodos([...todos, setText]);
-    
+    setTodos([...todos, { isChecked: false, text: setText }]);
   };
+
+  // Handle checked and unchecked todos
+  const handleToggle = (index) => {
+    const updatedTodos = todos.map((todo, i) =>
+      i === index ? { ...todo, isChecked: !todo.isChecked } : todo
+    );
+    setTodos(updatedTodos);
+  };
+
+  // Handle Deletion of todos
+  const handleDelete = (index) => {
+    const updatedTodos = todos.filter((todo, i) => i !== index);
+    setTodos(updatedTodos);
+    };
+
+  // Handle Clear Completed
+  const clearCompleted = () => {
+    const updatedTodos = todos.filter((todo) => !todo.isChecked);
+    setTodos(updatedTodos);
+  }
+
+  //  Get number of todos
+    const numberOfTodos = todos.length
+
+  
 
   // Handle Changes for image with relation to the screen size
   const [isLargeScreen, setIsLargeScreen] = useState(
@@ -37,6 +61,8 @@ function App() {
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
+
+  // Handle App Mode (Light or Dark) and Image to Show depending on screen size
   const changeIsDark = () => {
     setIsDark(!isDark);
   };
@@ -84,18 +110,27 @@ function App() {
           className="todo-list"
           style={{ backgroundColor: reusable, color: todoText }}
         >
-          <Todo todoInfo={"Finish Project Design"} />
+          {/* <Todo todoInfo={"Finish Project Design"} />
           <Todo todoInfo={"Take Eating Break"} />
           <Todo todoInfo={"Finish Project Functionality"} />
           <Todo todoInfo={"Take Snapshots"} />
           <Todo todoInfo={"Add firebase "} />
           {/* <Todo todoInfo={"Deploy to firebase"} />
         <Todo todoInfo={"Showcase Project"} /> */}
+          {todos.map((todo, index) => (
+        <Todo
+          key={index}
+          index={index}
+          todo={todo}
+          handleToggle={handleToggle}
+          handleDelete={handleDelete}
+        />
+      ))}
           <div className="bottom-info" style={{ backgroundColor: reusable }}>
-            <button>5 items left</button>
-            <button>Clear completed</button>
+            <button>{numberOfTodos} item{numberOfTodos <= 1 ? "" : "s"} left</button>
+            <button onClick={clearCompleted}>Clear completed</button>
           </div>
-        </div>
+          </div>
         <TodoFooter />
         <p className="dragdrop-info" style={{ color: bottomText }}>
           Drag and drop to reorder list
