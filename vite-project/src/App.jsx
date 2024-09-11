@@ -129,6 +129,7 @@ function App() {
         />
         <div
           className="todo-list"
+      
           style={{ backgroundColor: reusable, color: todoText }}
         >
           {/* <Todo todoInfo={"Finish Project Design"} />
