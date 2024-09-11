@@ -13,6 +13,15 @@ import lightMobileAppBGImage from "./assets/images/bg-mobile-light.jpg";
 import darkMobileAppBGImage from "./assets/images/bg-mobile-dark.jpg";
 function App() {
   const [isDark, setIsDark] = useState(false);
+  const [todos, setTodos] = useState([]);
+
+  // Handle Add Todo changes from the parent
+  const addTodo = (setText) => {
+    setTodos([...todos, setText]);
+    
+  };
+
+  // Handle Changes for image with relation to the screen size
   const [isLargeScreen, setIsLargeScreen] = useState(
     window.matchMedia("(min-width: 768px)").matches
   );
@@ -24,15 +33,12 @@ function App() {
 
     mediaQuery.addEventListener("change", handleChange);
 
-    // Cleanup event listener on component unmount
+    // Cleanup event listener on when component unmounts
     return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   const changeIsDark = () => {
     setIsDark(!isDark);
-  };
-  const changeImageSize = () => {
-    setIsLargeScreen(!isLargeScreen);
   };
 
   let image;
@@ -61,13 +67,19 @@ function App() {
   };
   const selectedStyle = isDark ? darkStyles : lightStyles;
   const { underlay, reusable, todoText, bottomText, textInput } = selectedStyle;
+
+  console.log(todos);
   return (
     <div className="todo-app">
       <img className="app-bg-image" src={image} alt="Todo Bg Image" />
       <div className="underlay" style={{ backgroundColor: underlay }}></div>
       <div className="container">
         <TodoHeader handleChange={changeIsDark} mode={isDark} />
-        <TodoSearch bgColor={reusable} color={textInput} />
+        <TodoSearch
+          bgColor={reusable}
+          color={textInput}
+          handleAddTodo={addTodo}
+        />
         <div
           className="todo-list"
           style={{ backgroundColor: reusable, color: todoText }}
@@ -77,7 +89,7 @@ function App() {
           <Todo todoInfo={"Finish Project Functionality"} />
           <Todo todoInfo={"Take Snapshots"} />
           <Todo todoInfo={"Add firebase "} />
-        {/* <Todo todoInfo={"Deploy to firebase"} />
+          {/* <Todo todoInfo={"Deploy to firebase"} />
         <Todo todoInfo={"Showcase Project"} /> */}
           <div className="bottom-info" style={{ backgroundColor: reusable }}>
             <button>5 items left</button>
