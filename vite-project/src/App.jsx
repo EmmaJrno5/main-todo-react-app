@@ -140,7 +140,7 @@ function App() {
           handleAddTodo={addTodo}
         />
         <DragDropContext onDragEnd={handleDragEnd}>
-          <Droppable droppableId="Todo">
+          <Droppable droppableId={Math.random().toString()}>
             {(provided) => (
               <div
                 className="todo-list"
@@ -171,6 +171,12 @@ function App() {
             )}
           </Droppable>
         </DragDropContext>
+        <div className="bottom-info" style={{ backgroundColor: reusable }}>
+            <button>
+              {numberOfTodos} item{numberOfTodos <= 1 ? "" : "s"} left
+            </button>
+            <button onClick={clearCompleted}>Clear completed</button>
+          </div>
         <TodoFooter handleFilter={handleFilter} />
         <p className="dragdrop-info" style={{ color: bottomText }}>
           Drag and drop to reorder list
