@@ -7,6 +7,7 @@ import TodoHeader from "./TodoHeader";
 import TodoSearch from "./TodoSearch";
 import Todo from "./Todo";
 import TodoFooter from "./TodoFooter";
+import { v4 as uuidv4 } from "uuid";
 
 import lightDesktopBGImage from "./assets/images/bg-desktop-light.jpg";
 import darkDesktopAppBGImage from "./assets/images/bg-desktop-dark.jpg";
@@ -14,8 +15,9 @@ import lightMobileAppBGImage from "./assets/images/bg-mobile-light.jpg";
 import darkMobileAppBGImage from "./assets/images/bg-mobile-dark.jpg";
 function App() {
   const [isDark, setIsDark] = useState(false);
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(JSON.parse(localStorage.getItem("todos")) || []);
   const [filteredTodos, setFilteredTodos] = useState(todos);
+
 
   // Handle Filter Btns
   const handleFilter = (filter) => {
@@ -33,7 +35,7 @@ function App() {
 
   // Handle Add Todo changes from the parent
   const addTodo = (setText) => {
-    setTodos([...todos, {id: Math.random() , isChecked: false, text: setText }]);
+    setTodos([...todos, {id: uuidv4().toString() , isChecked: false, text: setText }]);
   };
 
   // Handle checked and unchecked todos
@@ -95,6 +97,10 @@ function App() {
     setFilteredTodos(todos);
   }, [todos])
 
+   // Save todos to localStorage whenever they change
+   useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
   // Handle App Mode (Light or Dark) and Image to Show depending on screen size
   const changeIsDark = () => {
     setIsDark(!isDark);
