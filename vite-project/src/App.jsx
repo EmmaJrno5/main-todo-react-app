@@ -148,12 +148,12 @@ function App() {
               handleDelete={handleDelete}
             />
           ))}
-          <div className="bottom-info" style={{ backgroundColor: reusable }}>
+          {/* <div className="bottom-info" style={{ backgroundColor: reusable }}>
             <button>
               {numberOfTodos} item{numberOfTodos <= 1 ? "" : "s"} left
             </button>
             <button onClick={clearCompleted}>Clear completed</button>
-          </div>
+          </div> */}
         </div>
         <TodoFooter handleFilter={handleFilter} />
         <p className="dragdrop-info" style={{ color: bottomText }}>
