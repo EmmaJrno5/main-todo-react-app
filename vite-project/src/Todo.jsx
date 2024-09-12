@@ -9,6 +9,7 @@ function Todo({ todo, handleDelete, handleToggle, index }) {
       <div
         onClick={()=> handleToggle(index)}
         className={todo.isChecked ? "tick-circle checked" : "tick-circle"}
+        style={{cursor: 'pointer'}}
       >
         {todo.isChecked ? <img src={IconCheck} alt="Check Icon" /> : ""}
       </div>

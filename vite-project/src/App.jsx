@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
 
 import "./App.css";
 
@@ -32,7 +33,7 @@ function App() {
 
   // Handle Add Todo changes from the parent
   const addTodo = (setText) => {
-    setTodos([...todos, { isChecked: false, text: setText }]);
+    setTodos([...todos, {id: Math.random() , isChecked: false, text: setText }]);
   };
 
   // Handle checked and unchecked todos
@@ -55,7 +56,18 @@ function App() {
     setTodos(updatedTodos);
   };
 
-  
+  // Handle Drag End
+  const handleDragEnd = (result) => {
+    const { destination, source } = result;
+    if (!destination) return;
+
+    const reorderedTodos = Array.from(todos);
+    const [movedTodo] = reorderedTodos.splice(source.index, 1);
+    reorderedTodos.splice(destination.index, 0, movedTodo);
+
+    setTodos(reorderedTodos);
+  };
+
   
   //  Get number of todos
   const numberOfTodos = filteredTodos.length;
@@ -127,40 +139,51 @@ function App() {
           color={textInput}
           handleAddTodo={addTodo}
         />
-        <div
-          className="todo-list"
-      
-          style={{ backgroundColor: reusable, color: todoText }}
-        >
-          {/* <Todo todoInfo={"Finish Project Design"} />
-          <Todo todoInfo={"Take Eating Break"} />
-          <Todo todoInfo={"Finish Project Functionality"} />
-          <Todo todoInfo={"Take Snapshots"} />
-          <Todo todoInfo={"Add firebase "} />
-          {/* <Todo todoInfo={"Deploy to firebase"} />
-        <Todo todoInfo={"Showcase Project"} /> */}
-          {filteredTodos.map((todo, index) => (
-            <Todo
-              key={index}
-              index={index}
-              todo={todo}
-              handleToggle={handleToggle}
-              handleDelete={handleDelete}
-            />
-          ))}
-          {/* <div className="bottom-info" style={{ backgroundColor: reusable }}>
+        <DragDropContext onDragEnd={handleDragEnd}>
+          <Droppable droppableId={Math.random().toString()}>
+            {(provided) => (
+              <div
+                className="todo-list"
+                style={{ backgroundColor: reusable, color: todoText }}
+                ref={provided.innerRef}
+                {...provided.droppableProps}
+              >
+                {filteredTodos.map((todo, index) => (
+                  <Draggable key={todo.id} draggableId={todo.id.toString()} index={index}>
+                    {(provided) => (
+                      <div
+                        ref={provided.innerRef}
+                        {...provided.draggableProps}
+                        {...provided.dragHandleProps}
+                      >
+                        <Todo
+                          index={index}
+                          todo={todo}
+                          handleToggle={handleToggle}
+                          handleDelete={handleDelete}
+                        />
+                      </div>
+                    )}
+                  </Draggable>
+                ))}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+        <div className="bottom-info" style={{ backgroundColor: reusable }}>
             <button>
               {numberOfTodos} item{numberOfTodos <= 1 ? "" : "s"} left
             </button>
             <button onClick={clearCompleted}>Clear completed</button>
-          </div> */}
+          </div>
         </div>
         <TodoFooter handleFilter={handleFilter} />
         <p className="dragdrop-info" style={{ color: bottomText }}>
           Drag and drop to reorder list
         </p>
       </div>
-    </div>
+   
   );
 }
 
